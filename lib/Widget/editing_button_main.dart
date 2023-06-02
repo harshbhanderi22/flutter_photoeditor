@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:photoeditor/Service/ads.dart';
 
 class EditingButton extends StatefulWidget {
 
@@ -19,6 +20,8 @@ class _EditingButtonState extends State<EditingButton> {
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: GestureDetector(
         onTap: (){
+          const  FaceBookAds().showInter();
+
           widget.tap();
         },
         child: Container(
@@ -29,12 +32,12 @@ class _EditingButtonState extends State<EditingButton> {
                 BoxShadow(
                   color: Colors.white.withOpacity(0.05),
                   offset: Offset(-6.0, -6.0),
-                  blurRadius:50.0,
+                  blurRadius:5.0,
                 ),
                 BoxShadow(
                   color: Colors.black.withOpacity(0.8),
                   offset: Offset(6.0, 6.0),
-                  blurRadius: 14.0,
+                  blurRadius: 5.0,
                 ),
               ],
               color: Color(0xFF4B4B4B),

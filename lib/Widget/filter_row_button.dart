@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:photoeditor/Service/ads.dart';
 
 class FilterRowButton extends StatefulWidget {
 
@@ -20,6 +21,8 @@ class _FilterRowButtonState extends State<FilterRowButton> {
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: GestureDetector(
         onTap: (){
+          const  FaceBookAds().showInter();
+
           widget.tap();
         },
         child: Container(

@@ -1,13 +1,13 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:photoeditor/Service/ads.dart';
 import 'package:photoeditor/Widget/editing_button_row.dart';
 import 'package:photoeditor/Widget/instruction_row.dart';
- import '../Service/image_pick_crop.dart';
+import '../Service/image_pick_crop.dart';
 import '../Utilities/constant.dart';
 import '../Widget/editing_button_main.dart';
 import '../Widget/filter_row_button.dart';
@@ -15,7 +15,8 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ImageEditingScreen extends StatefulWidget {
-  ImageEditingScreen(this.croppedimagepath, this.pickedimagepath);
+  const ImageEditingScreen(this.croppedimagepath, this.pickedimagepath,
+      {super.key});
 
   final File croppedimagepath;
   final File pickedimagepath;
@@ -31,36 +32,40 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
   late File val;
   int i = 0;
   int p = 0;
-  late double phorizontal=0;
-  late double pvertical=0;
-  late double pall=0;
-  late double borderwidth=0;
-  late double borderadius=0;
+  late double phorizontal = 0;
+  late double pvertical = 0;
+  late double pall = 0;
+  late double borderwidth = 0;
+  late double borderadius = 0;
   late double brightness_value = 1;
   late double contrast_value = 1;
   late double radius = 0;
-  late double t=(1-contrast_value)/2;
+  late double t = (1 - contrast_value) / 2;
   late String valueText;
-  late double lposition=0;
-  late double tposition=0;
-  var filenamecontroller=TextEditingController();
+  late double lposition = 0;
+  late double tposition = 0;
+  var filenamecontroller = TextEditingController();
   bool toolsboxvisibility = false;
 
-
-  void convertWidgetToImage( ) async {
+  void convertWidgetToImage() async {
     var status = await Permission.storage.status;
     if (status.isGranted) {
-      RenderRepaintBoundary boundary =
-      _repaintkey.currentContext!.findRenderObject() as RenderRepaintBoundary;
-      ui.Image image = await boundary.toImage(pixelRatio:50);
-      ByteData? byteData = await (image.toByteData(format: ui.ImageByteFormat.png) as Future<ByteData?>);
-      if (byteData != null) {
-        final result = await ImageGallerySaver.saveImage(byteData.buffer.asUint8List(),);
+      Fluttertoast.showToast(msg: "Please Wait!, Image is getting Saved");
+
+      final RenderRepaintBoundary boundary = _repaintkey.currentContext!
+          .findRenderObject()! as RenderRepaintBoundary;
+      final ui.Image image = await boundary.toImage(pixelRatio: 15);
+      final ByteData? byteData =
+          await image.toByteData(format: ui.ImageByteFormat.png);
+      final Uint8List pngBytes = await byteData!.buffer.asUint8List();
+      if (pngBytes != null) {
+        final result = await ImageGallerySaver.saveImage(
+          byteData.buffer.asUint8List(),
+        );
         print(result);
         Fluttertoast.showToast(msg: "Image Saved Successfully");
       }
-     }
-    else{
+    } else {
       Permission.storage.request();
     }
   }
@@ -68,30 +73,62 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
   @override
   List<double> filter = NO_FILTER;
 
-Widget build(BuildContext context) {
-
-    List<double> BRIGHTNESS =
-    [brightness_value, 0.0, 0.0, 0.0, 0.0,
-      0.0, brightness_value, 0.0, 0.0, 0.0,
-      0.0, 0.0, brightness_value, 0.0, 0.0,
-      0.0, 0.0, 0.0, 1.0, 0.0];
-
-    List<double> CONTRAST =
-    [contrast_value, 0.0, 0.0, 0.0, 0.0,
-      0.0, contrast_value, 0.0, 0.0, 0.0,
-      0.0, 0.0, contrast_value, 0.0, 0.0,
-      0.0, 0.0, 0.0, 1.0, 0.0];
-
-    List<EdgeInsets> PaddingType=[
-    EdgeInsets.symmetric(horizontal: phorizontal),
-    EdgeInsets.symmetric(vertical: pvertical),
-    EdgeInsets.all(pall)
+  Widget build(BuildContext context) {
+    List<double> BRIGHTNESS = [
+      brightness_value,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      brightness_value,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      brightness_value,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0
     ];
 
+    List<double> CONTRAST = [
+      contrast_value,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      contrast_value,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      contrast_value,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0
+    ];
 
-    List<Widget> RowsForButtons = [
+    List<EdgeInsets> paddingType = [
+      EdgeInsets.symmetric(horizontal: phorizontal),
+      EdgeInsets.symmetric(vertical: pvertical),
+      EdgeInsets.all(pall)
+    ];
+
+    List<Widget> rowForButtion = [
       //i=0
-      InstructionRow(),
+      const InstructionRow(),
       //Crop Row(i=1)
       Container(
         child: Row(
@@ -234,9 +271,12 @@ Widget build(BuildContext context) {
       Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Brightness", style: k14_400,),
+          const Text(
+            "Brightness",
+            style: k14_400,
+          ),
           SliderTheme(
-            data: SliderThemeData(
+            data: const SliderThemeData(
                 inactiveTrackColor: Color(0xFF8D8E98),
                 activeTrackColor: Color(0xFFEA4848),
                 overlayColor: Color(0x30000000),
@@ -260,9 +300,12 @@ Widget build(BuildContext context) {
       Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Contrast", style: k14_400,),
+          const Text(
+            "Contrast",
+            style: k14_400,
+          ),
           SliderTheme(
-            data: SliderThemeData(
+            data: const SliderThemeData(
                 inactiveTrackColor: Color(0xFF8D8E98),
                 activeTrackColor: Color(0xFFEA4848),
                 overlayColor: Color(0x30000000),
@@ -287,9 +330,12 @@ Widget build(BuildContext context) {
       Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Radius", style: k14_400,),
+          const Text(
+            "Radius",
+            style: k14_400,
+          ),
           SliderTheme(
-            data: SliderThemeData(
+            data: const SliderThemeData(
                 inactiveTrackColor: Color(0xFF8D8E98),
                 activeTrackColor: Color(0xFFEA4848),
                 overlayColor: Color(0x30000000),
@@ -311,50 +357,52 @@ Widget build(BuildContext context) {
         ],
       ),
       //Padding Types(i=6)
-      Container(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            EditingButtonRow(
-                icon: Icons.padding,
-                label: "Horizontal",
-                tap:  (){
-                  setState((){
-                      i=7;
-                      p=0;
-                  });
-                }
-            ),
-            EditingButtonRow(
-                icon: Icons.padding,
-                label: "Vertical",
-                tap:  (){
-                  setState((){
-                    i=8;
-                    p=1;
-                  });
-                }
-            ),
-            EditingButtonRow(
-                icon: Icons.padding,
-                label: "All",
-                tap:  (){
-                  setState((){
-                    i=9;
-                    p=2;
-                  });
-                }
-            ),
-          ],
-        ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          EditingButtonRow(
+              icon: Icons.padding,
+              label: "Horizontal",
+              tap: () {
+                setState(() {
+                  i = 7;
+                  p = 0;
+                  pvertical = 0;
+                });
+              }),
+          EditingButtonRow(
+              icon: Icons.padding,
+              label: "Vertical",
+              tap: () {
+                setState(() {
+                  i = 8;
+                  p = 1;
+                  phorizontal = 0;
+                });
+              }),
+          EditingButtonRow(
+              icon: Icons.padding,
+              label: "All",
+              tap: () {
+                setState(() {
+                  i = 9;
+                  p = 2;
+                  pvertical = 0;
+                  phorizontal = 0;
+                });
+              }),
+        ],
       ),
       //Horizontal Padding(i=7)
       Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Horizontal Padding", style: k14_400,),
+          const Text(
+            "Horizontal Padding",
+            style: k14_400,
+          ),
           SliderTheme(
-            data: SliderThemeData(
+            data: const SliderThemeData(
                 inactiveTrackColor: Color(0xFF8D8E98),
                 activeTrackColor: Color(0xFFEA4848),
                 overlayColor: Color(0x30000000),
@@ -379,9 +427,12 @@ Widget build(BuildContext context) {
       Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Vertical Padding", style: k14_400,),
+          const Text(
+            "Vertical Padding",
+            style: k14_400,
+          ),
           SliderTheme(
-            data: SliderThemeData(
+            data: const SliderThemeData(
                 inactiveTrackColor: Color(0xFF8D8E98),
                 activeTrackColor: Color(0xFFEA4848),
                 overlayColor: Color(0x30000000),
@@ -406,9 +457,12 @@ Widget build(BuildContext context) {
       Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Padding All", style: k14_400,),
+          const Text(
+            "Padding All",
+            style: k14_400,
+          ),
           SliderTheme(
-            data: SliderThemeData(
+            data: const SliderThemeData(
                 inactiveTrackColor: Color(0xFF8D8E98),
                 activeTrackColor: Color(0xFFEA4848),
                 overlayColor: Color(0x30000000),
@@ -433,9 +487,12 @@ Widget build(BuildContext context) {
       Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Border Width", style: k14_400,),
+          const Text(
+            "Border Width",
+            style: k14_400,
+          ),
           SliderTheme(
-            data: SliderThemeData(
+            data: const SliderThemeData(
                 inactiveTrackColor: Color(0xFF8D8E98),
                 activeTrackColor: Color(0xFFEA4848),
                 overlayColor: Color(0x30000000),
@@ -460,9 +517,12 @@ Widget build(BuildContext context) {
       Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Border Radius", style: k14_400,),
+          const Text(
+            "Border Radius",
+            style: k14_400,
+          ),
           SliderTheme(
-            data: SliderThemeData(
+            data: const SliderThemeData(
                 inactiveTrackColor: Color(0xFF8D8E98),
                 activeTrackColor: Color(0xFFEA4848),
                 overlayColor: Color(0x30000000),
@@ -489,67 +549,80 @@ Widget build(BuildContext context) {
       theme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Color(0xFF313030),
-          leading: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(Icons.arrow_back_ios_new)),
-          title: Text("UEditor", style: k20_400),
-          centerTitle: true,
-          actions: [
-            IconButton(
-                onPressed: (){
-                   convertWidgetToImage();
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: const Color(0xFF313030),
+            leading: IconButton(
+                onPressed: () {
+                  const  FaceBookAds().showInter();
+                  Navigator.pop(context);
                 },
-                icon: Icon(Icons.save)
-        )
-          ],
-        ),
-        body: SingleChildScrollView(
-          child: SafeArea(
-            child: Container(
+                icon: const Icon(Icons.arrow_back_ios_new)),
+            title: const Text("UEditor", style: k20_400),
+            centerTitle: true,
+            actions: [
+              IconButton(
+                  onPressed: () {
+                   const  FaceBookAds().showInter();
+                    convertWidgetToImage();
+                  },
+                  icon: const Icon(Icons.save))
+            ],
+          ),
+          body: SingleChildScrollView(
+            child: SafeArea(
               child: Stack(
                 children: [
-                  Container(
-                    height: MediaQuery.of(context).size.height/1.10,
-                    width: MediaQuery.of(context).size.width,
-                    child: croppedimage != null
-                        ? Stack(
-                          children: [
-                            Positioned(
-                              top: 5,
-                              left: 0,
-                              right: 0,
-                              child: RepaintBoundary(
-                                  key: _repaintkey,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.all(Radius.circular(borderadius)),
-                                        border: Border.all(
-                                          color: Colors.black,
-                                          width: borderwidth,
-                                        )
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(radius),
-                                      child: Padding(
-                                        padding: PaddingType[p],
-                                        child: ColorFiltered(
-                                          colorFilter: ColorFilter.matrix(CONTRAST),
+                  Center(
+                    child: Container(
+                       height: (MediaQuery.of(context).size.height)-140,
+                      width: (MediaQuery.of(context).size.width) + pvertical,
+                      child: croppedimage != null
+                          ? Stack(
+                              children: [
+                                Positioned(
+                                  top: 5,
+                                  left: 0,
+                                  right: 0,
+                                  child: RepaintBoundary(
+                                    key: _repaintkey,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(borderadius)),
+                                          border: Border.all(
+                                            color: Colors.black,
+                                            width: borderwidth,
+                                          )),
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(radius),
+                                        child: Padding(
+                                          padding: paddingType[p],
                                           child: ColorFiltered(
-                                            colorFilter: ColorFilter.matrix(BRIGHTNESS),
+                                            colorFilter:
+                                                ColorFilter.matrix(CONTRAST),
                                             child: ColorFiltered(
-                                              colorFilter: ColorFilter.matrix(filter),
-                                              child: Image.file(
-                                                croppedimage,
-                                                width: MediaQuery.of(context).size.width,
-                                                height: MediaQuery.of
-                                                  (context).size.height/1.75,
-                                                fit: BoxFit.fill,
+                                              colorFilter: ColorFilter.matrix(
+                                                  BRIGHTNESS),
+                                              child: ColorFiltered(
+                                                colorFilter:
+                                                    ColorFilter.matrix(filter),
+                                                child: Image.file(
+                                                  croppedimage,
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width -
+                                                      phorizontal,
+                                                  height:
+                                                      (MediaQuery.of(context)
+                                                                  .size
+                                                                  .height /
+                                                              1.75) -
+                                                          (pvertical + pall),
+                                                  fit: BoxFit.fill,
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -558,54 +631,53 @@ Widget build(BuildContext context) {
                                     ),
                                   ),
                                 ),
+                              ],
+                            )
+                          : Container(
+                              decoration: BoxDecoration(color: Colors.red[200]),
+                              child: Icon(
+                                Icons.camera_alt,
+                                color: Colors.grey[800],
+                              ),
                             ),
-                          ],
-                        )
-                        : Container(
-                            decoration: BoxDecoration(color: Colors.red[200]),
-                            child: Icon(
-                              Icons.camera_alt,
-                              color: Colors.grey[800],
-                            ),
-                          ),
+                    ),
                   ),
                   //Row Below Photo with detailed function
                   Positioned(
-                    top: MediaQuery.of(context).size.height/1.70,
+                    top: (MediaQuery.of(context).size.height / 1.70) +
+                        (pvertical + pall),
                     left: 0,
                     right: 0,
                     child: Center(
                       child: Container(
                         height: MediaQuery.of(context).size.height / 7,
-                        child: RowsForButtons[i],
+                        child: rowForButtion[i],
                       ),
                     ),
                   ),
                   Positioned(
-                      bottom: 0,
-                     child: Container(
+                    bottom: 0,
+                    child: Container(
                       height: 50,
                       width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(color: Colors.blueAccent),
-                      child: Center(child: Text("Google Ads")),
+                      decoration: const BoxDecoration(color: Colors.blueAccent),
+                      child: const FaceBookAds(),
                     ),
                   ),
                   //Container with main funcationalities
                   Visibility(
                     visible: toolsboxvisibility,
                     child: Positioned(
-                      top: MediaQuery.of(context).size.height/2,
+                      top: MediaQuery.of(context).size.height / 2,
                       child: SingleChildScrollView(
                         child: Container(
                             height: MediaQuery.of(context).size.height / 2,
                             width: MediaQuery.of(context).size.width,
                             decoration: BoxDecoration(
-                              color: Color(0xFFCECECE),
+                              color: const Color(0xFFCECECE),
                               border: Border.all(
-                                color: Color(0x1AAFAFAF),
-                                width: 0.5
-                              ),
-                              borderRadius: BorderRadius.only(
+                                  color: const Color(0x1AAFAFAF), width: 0.5),
+                              borderRadius: const BorderRadius.only(
                                   topRight: Radius.circular(40),
                                   topLeft: Radius.circular(40)),
                             ),
@@ -626,9 +698,10 @@ Widget build(BuildContext context) {
                                           icon: Icons.crop,
                                           label: "Crop",
                                           tap: () {
+
                                             setState(() {
                                               i = 1;
-                                              toolsboxvisibility=false;
+                                              toolsboxvisibility = false;
                                             });
                                           },
                                         ),
@@ -638,7 +711,7 @@ Widget build(BuildContext context) {
                                           tap: () {
                                             setState(() {
                                               i = 2;
-                                              toolsboxvisibility=false;
+                                              toolsboxvisibility = false;
                                             });
                                           },
                                         ),
@@ -648,13 +721,13 @@ Widget build(BuildContext context) {
                                           tap: () {
                                             setState(() {
                                               i = 3;
-                                              toolsboxvisibility=false;
+                                              toolsboxvisibility = false;
                                             });
                                           },
                                         ),
                                       ],
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 20,
                                     ),
                                     Row(
@@ -667,7 +740,7 @@ Widget build(BuildContext context) {
                                           tap: () {
                                             setState(() {
                                               i = 4;
-                                              toolsboxvisibility=false;
+                                              toolsboxvisibility = false;
                                             });
                                           },
                                         ),
@@ -677,7 +750,7 @@ Widget build(BuildContext context) {
                                           tap: () {
                                             setState(() {
                                               i = 5;
-                                              toolsboxvisibility=false;
+                                              toolsboxvisibility = false;
                                             });
                                           },
                                         ),
@@ -691,22 +764,22 @@ Widget build(BuildContext context) {
                                               contrast_value = 1;
                                               i = 0;
                                               radius = 0;
-                                              pall=0;
-                                              pvertical=0;
-                                              phorizontal=0;
-                                              borderwidth=0;
-                                              toolsboxvisibility=false;
+                                              pall = 0;
+                                              pvertical = 0;
+                                              phorizontal = 0;
+                                              borderwidth = 0;
+                                              toolsboxvisibility = false;
                                             });
                                           },
                                         ),
                                       ],
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 20,
                                     ),
                                     Row(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         EditingButton(
                                           icon: Icons.padding_sharp,
@@ -714,7 +787,7 @@ Widget build(BuildContext context) {
                                           tap: () {
                                             setState(() {
                                               i = 6;
-                                              toolsboxvisibility=false;
+                                              toolsboxvisibility = false;
                                             });
                                           },
                                         ),
@@ -724,7 +797,7 @@ Widget build(BuildContext context) {
                                           tap: () {
                                             setState(() {
                                               i = 10;
-                                              toolsboxvisibility=false;
+                                              toolsboxvisibility = false;
                                             });
                                           },
                                         ),
@@ -734,11 +807,10 @@ Widget build(BuildContext context) {
                                           tap: () {
                                             setState(() {
                                               i = 11;
-                                              toolsboxvisibility=false;
+                                              toolsboxvisibility = false;
                                             });
                                           },
                                         ),
-
                                       ],
                                     ),
                                   ],
@@ -753,43 +825,47 @@ Widget build(BuildContext context) {
               ),
             ),
           ),
-        ),
-        bottomNavigationBar: BottomAppBar(
-          color: Colors.transparent,
-           child: Container(
-            height: 60,
-            decoration: BoxDecoration(
-              color: Color(0xFF3F3E3E),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  GestureDetector(
-                    onTap: (){
-                      setState((){
-                        toolsboxvisibility = !toolsboxvisibility;
-                      });
-                    },
-                      child: Text("Tools", style: k20_600,),
-                  ),
-                  VerticalDivider(
-                    width: 60,
-                    color: Colors.grey,
-                  ),
-                  GestureDetector(
-                      onTap: (){
+          bottomNavigationBar: BottomAppBar(
+            color: Colors.transparent,
+            child: Container(
+              height: 60,
+              decoration: const BoxDecoration(
+                color: Color(0xFF3F3E3E),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          toolsboxvisibility = !toolsboxvisibility;
+                        });
+                      },
+                      child: const Text(
+                        "Tools",
+                        style: k20_600,
+                      ),
+                    ),
+                    const VerticalDivider(
+                      width: 60,
+                      color: Colors.grey,
+                    ),
+                    GestureDetector(
+                      onTap: () {
                         print("Share");
                       },
-                      child: Text("Share", style: k20_600,),
-                  ),
-                ],
+                      child: const Text(
+                        "Share",
+                        style: k20_600,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        )
-      ),
+          )),
     );
   }
 }

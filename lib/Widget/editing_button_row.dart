@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:photoeditor/Service/ads.dart';
 
 class EditingButtonRow extends StatefulWidget {
 
@@ -20,6 +21,7 @@ class _EditingButtonRowState extends State<EditingButtonRow> {
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: GestureDetector(
         onTap: (){
+          const  FaceBookAds().showInter();
           widget.tap();
         },
         child: Container(
@@ -29,11 +31,11 @@ class _EditingButtonRowState extends State<EditingButtonRow> {
               color: Color(0xFF3F3F3F),
               borderRadius: BorderRadius.circular(10),
               boxShadow: [
-                BoxShadow(
-                  color: Colors.white.withOpacity(0.05),
-                  offset: Offset(-6.0, -6.0),
-                  blurRadius:50.0,
-                ),
+                // BoxShadow(
+                //   color: Colors.white.withOpacity(0.05),
+                //   offset: Offset(-6.0, -6.0),
+                //   blurRadius:50.0,
+                // ),
                 BoxShadow(
                   color: Colors.black.withOpacity(0.8),
                   offset: Offset(6.0, 6.0),
