@@ -57,7 +57,7 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
 
       final RenderRepaintBoundary boundary = _repaintkey.currentContext!
           .findRenderObject()! as RenderRepaintBoundary;
-      final ui.Image image = await boundary.toImage(pixelRatio: 15);
+      final ui.Image image = await boundary.toImage(pixelRatio: 12.5);
       final ByteData? byteData =
           await image.toByteData(format: ui.ImageByteFormat.png);
       final Uint8List pngBytes = byteData!.buffer.asUint8List();
@@ -615,7 +615,7 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
                                                       (MediaQuery.of(context)
                                                                   .size
                                                                   .height /
-                                                              1.75) -
+                                                              1.9) -
                                                           (pvertical + pall),
                                                   fit: BoxFit.fill,
                                                 ),
@@ -640,7 +640,7 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
                   ),
                   //Row Below Photo with detailed function
                   Positioned(
-                    top: (MediaQuery.of(context).size.height / 1.70) +
+                    top: (MediaQuery.of(context).size.height / 1.85) +
                         (pvertical + pall),
                     left: 0,
                     right: 0,
@@ -838,6 +838,7 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
                   children: [
                     GestureDetector(
                       onTap: () {
+                        FaceBookAds().showInter();
                         setState(() {
                           toolsboxvisibility = !toolsboxvisibility;
                         });
@@ -852,7 +853,10 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
                       color: Colors.grey,
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        FaceBookAds().showInter();
+                        Fluttertoast.showToast(msg: "Coming Soon..");
+                      },
                       child: const Text(
                         "Share",
                         style: k20_600,

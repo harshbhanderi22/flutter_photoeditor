@@ -44,6 +44,7 @@ dependencies:
   fluttertoast: ^8.0.9
   permission_handler: ^10.2.0
   facebook_audience_network: ^1.0.1
+  connectivity_plus: ^4.0.1
  
 
 

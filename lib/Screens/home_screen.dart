@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:io';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:facebook_audience_network/facebook_audience_network.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -20,11 +22,63 @@ class _HomeScreenState extends State<HomeScreen> {
   late File croppedimage;
   late File pickedimage;
 
+  StreamSubscription? connection;
+  bool isoffline = true;
+
+  void checkInternet() {
+    connection = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult result) {
+      // whenevery connection status is changed.
+      if (result == ConnectivityResult.none) {
+        //print("None");
+        Fluttertoast.showToast(
+            msg: "Check Your Internet Connection And Try Again");
+        //there is no any connection
+        setState(() {
+          isoffline = true;
+        });
+      } else if (result == ConnectivityResult.mobile) {
+        //connection is mobile data network
+        //print("Mobile");
+        setState(() {
+          isoffline = false;
+        });
+      } else if (result == ConnectivityResult.wifi) {
+        //connection is from wifi
+        //print("Wifi");
+        setState(() {
+          isoffline = false;
+        });
+      } else if (result == ConnectivityResult.ethernet) {
+        //connection is from wired connection
+        //print("Wired");
+
+        setState(() {
+          isoffline = false;
+        });
+      } else if (result == ConnectivityResult.bluetooth) {
+        //connection is from bluetooth threatening
+        //print("Blue");
+        setState(() {
+          isoffline = false;
+        });
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    checkInternet();
     FacebookAudienceNetwork.init(
         testingId: "8ebc4066-3412-4823-b2b1-6523a3af16f9");
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    connection!.cancel();
   }
 
   @override
@@ -38,7 +92,40 @@ class _HomeScreenState extends State<HomeScreen> {
           title: const Text("UEditor", style: k20_400),
           centerTitle: true,
         ),
-        body: Column(
+        body:  isoffline ?
+        Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Looks like, You don't have active Internet "
+                      "Connection.\nPlease turn it on and try again",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                GestureDetector(
+                  onTap: (){
+                    checkInternet();
+                  },
+                  child: Container(
+                    height: 50,
+                    width: MediaQuery.of(context).size.width / 2,
+                    decoration: BoxDecoration(
+                        color: Colors.blueGrey.withOpacity(0.5)),
+                    child: Center(
+                      child: Text(
+                        "Try Again!!!",
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            )):
+        Column(
           children: [
             Container(
               height: MediaQuery.of(context).size.height - 130,
@@ -120,7 +207,7 @@ class _HomeScreenState extends State<HomeScreen> {
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(30))),
             content: SizedBox(
-              height: 150,
+              height: MediaQuery.of(context).size.height / 1.25,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -155,7 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                       child: Container(
                         height: 50,
-                        width: 150,
+                        width: 300,
                         decoration: BoxDecoration(
                             boxShadow: [
                               BoxShadow(
@@ -212,7 +299,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                       child: Container(
                         height: 50,
-                        width: 150,
+                        width: 300,
                         decoration: BoxDecoration(
                             boxShadow: [
                               BoxShadow(
@@ -243,6 +330,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  FaceBookAds(),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  FaceBookAds().nativeAd()
                 ],
               ),
             ));
