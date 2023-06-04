@@ -5,7 +5,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:photoeditor/Screens/image_editing_screen.dart';
 import 'package:photoeditor/Service/ads.dart';
 import 'package:photoeditor/Utilities/constant.dart';
-import 'package:photoeditor/Widget/home_drawer.dart';
 
 import '../Service/image_pick_crop.dart';
 import '../Widget/home_screen_button.dart';
@@ -25,11 +24,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     FacebookAudienceNetwork.init(
-        testingId: "8ebc4066-3412-4823-b2b1-6523a3af16f9"
-    );
+        testingId: "8ebc4066-3412-4823-b2b1-6523a3af16f9");
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -44,15 +40,18 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         body: Column(
           children: [
-            SingleChildScrollView(
-              child: Container(
-                height: MediaQuery.of(context).size.height-130 ,
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: 50,  ),
+            Container(
+              height: MediaQuery.of(context).size.height - 130,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 50,
+              ),
+              child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    SizedBox(height: 30,),
-                    Container(
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    SizedBox(
                       height: MediaQuery.of(context).size.height / 3,
                       width: MediaQuery.of(context).size.width,
                       child: Neumorphic(
@@ -70,17 +69,17 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
-                    Container(
-
+                    SizedBox(
                       width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height / 2.5,
+                      //height: MediaQuery.of(context).size.height / 1.5,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                             horizontal: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SizedBox(height: 50,),
+                            const SizedBox(
+                              height: 50,
+                            ),
                             HomeScreenButton(
                               label: "Chhoose Photo",
                               tap: () {
@@ -90,17 +89,16 @@ class _HomeScreenState extends State<HomeScreen> {
                             HomeScreenButton(
                               label: "Your Photo",
                               tap: () {
-                                FaceBookAds().showInter();
+                                const FaceBookAds().showInter();
                                 Fluttertoast.showToast(msg: "Coming Soon...");
                               },
                             ),
-
+                            const FaceBookAds().nativeAd(),
                           ],
                         ),
                       ),
                     ),
-
-                   ],
+                  ],
                 ),
               ),
             ),
@@ -112,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _showMyDialog() async {
-    FaceBookAds().showInter();
+    const FaceBookAds().showInter();
     return showDialog<void>(
       context: context,
       barrierDismissible: true, // user must tap button!
@@ -130,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: GestureDetector(
                       onTap: () async {
-                        FaceBookAds().showInter();
+                        //const FaceBookAds().showInter();
                         // Step #1: Pick Image From Galler.
                         await Utils.pickImageFromGallery()
                             .then((pickedFile) async {
@@ -148,6 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             });
                           });
                         });
+                        // ignore: use_build_context_synchronously
                         Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -191,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: GestureDetector(
                       onTap: () async {
-                        FaceBookAds().showInter();
+                        const FaceBookAds().showInter();
                         await Utils.pickImageFromCamera()
                             .then((pickedFile) async {
                           if (pickedFile == null) return;
@@ -204,7 +203,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             });
                           });
                         });
-                         Navigator.push(
+                        // ignore: use_build_context_synchronously
+                        Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => ImageEditingScreen(
@@ -250,5 +250,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-

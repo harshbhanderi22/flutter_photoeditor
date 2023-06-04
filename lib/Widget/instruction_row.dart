@@ -5,19 +5,17 @@ class InstructionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Text("Select any Funcationaly from Bottom\n and Enjoy new "
-            "Exeperiecne of Editing",
-        textAlign: TextAlign.center,
-        style: TextStyle(
-            fontSize: 18,
-          fontWeight: FontWeight.w300,
-          color: Color(0xFF676767)
+    return const Center(
+      child: Text("Select any Funcationaly from Bottom\n and Enjoy new "
+          "Exeperiecne of Editing",
+      textAlign: TextAlign.center,
+      style: TextStyle(
+          fontSize: 18,
+        fontWeight: FontWeight.w300,
+        color: Color(0xFF676767)
 
 
-        ),
-        ),
+      ),
       ),
     );
   }

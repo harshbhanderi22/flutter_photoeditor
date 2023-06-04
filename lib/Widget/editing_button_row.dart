@@ -4,7 +4,7 @@ import 'package:photoeditor/Service/ads.dart';
 
 class EditingButtonRow extends StatefulWidget {
 
-  EditingButtonRow({required this.icon,required this.label,required this.tap});
+  const EditingButtonRow({super.key, required this.icon,required this.label,required this.tap});
 
   final IconData icon;
   final String label;
@@ -28,7 +28,7 @@ class _EditingButtonRowState extends State<EditingButtonRow> {
           height: MediaQuery.of(context).size.height/11,
           width: MediaQuery.of(context).size.width/6,
           decoration: BoxDecoration(
-              color: Color(0xFF3F3F3F),
+              color: const Color(0xFF3F3F3F),
               borderRadius: BorderRadius.circular(10),
               boxShadow: [
                 // BoxShadow(
@@ -38,7 +38,7 @@ class _EditingButtonRowState extends State<EditingButtonRow> {
                 // ),
                 BoxShadow(
                   color: Colors.black.withOpacity(0.8),
-                  offset: Offset(6.0, 6.0),
+                  offset: const Offset(6.0, 6.0),
                   blurRadius: 16.0,
                 ),
               ]
@@ -48,8 +48,8 @@ class _EditingButtonRowState extends State<EditingButtonRow> {
             children: [
               Icon(widget.icon),
 
-              Center(child: Text("${widget.label}", textAlign: TextAlign
-                  .center ,style: TextStyle(
+              Center(child: Text(widget.label, textAlign: TextAlign
+                  .center ,style: const TextStyle(
                   fontSize: 10
               ),))
             ],

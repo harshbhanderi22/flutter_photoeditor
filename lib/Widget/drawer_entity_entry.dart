@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 
 class DrawerEntry extends StatefulWidget {
-  DrawerEntry({required this.tiltIcon,required this.title,required this.tap});
+  const DrawerEntry({super.key, required this.tiltIcon,required this.title,required this.tap});
 
   final IconData tiltIcon;
   final String title;
@@ -22,7 +22,7 @@ class _DrawerEntryState extends State<DrawerEntry> {
           widget.tiltIcon,
           color: Colors.white,
         ),
-        title: Text("${widget.title}", style: TextStyle(
+        title: Text(widget.title, style: const TextStyle(
             fontSize: 20.0,
             color: Colors.white
         ),

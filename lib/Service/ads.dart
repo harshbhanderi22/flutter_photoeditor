@@ -1,4 +1,5 @@
 import 'package:facebook_audience_network/facebook_audience_network.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class FaceBookAds extends StatelessWidget {
@@ -13,30 +14,54 @@ class FaceBookAds extends StatelessWidget {
         if (result == InterstitialAdResult.LOADED) {
           FacebookInterstitialAd.showInterstitialAd();
         } else {
-          print(value.toString());
+          if (kDebugMode) {
+            print(value.toString());
+          }
         }
       },
     );
   }
 
+  Widget nativeAd() {
+    return FacebookNativeAd(
+      placementId: "CAROUSEL_IMG_SQUARE_APP_INSTALL#YOUR_PLACEMENT_ID",
+      adType: NativeAdType.NATIVE_AD,
+      listener: (result, value) {},
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FacebookBannerAd(
+    return FacebookNativeAd(
       placementId: "IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID",
-      bannerSize: BannerSize.STANDARD,
+      adType: NativeAdType.NATIVE_BANNER_AD,
+      height: 50,
       listener: (result, value) {
         switch (result) {
-          case BannerAdResult.ERROR:
-            print("Error: $value");
+          case NativeAdResult.ERROR:
+            if (kDebugMode) {
+              print("Error: $value");
+            }
             break;
-          case BannerAdResult.LOADED:
-            print("Loaded: $value");
+          case NativeAdResult.LOADED:
+            if (kDebugMode) {
+              print("Loaded: $value");
+            }
             break;
-          case BannerAdResult.CLICKED:
-            print("Clicked: $value");
+          case NativeAdResult.CLICKED:
+            if (kDebugMode) {
+              print("Clicked: $value");
+            }
             break;
-          case BannerAdResult.LOGGING_IMPRESSION:
-            print("Logging Impression: $value");
+          case NativeAdResult.LOGGING_IMPRESSION:
+            if (kDebugMode) {
+              print("Logging Impression: $value");
+            }
+            break;
+          case NativeAdResult.MEDIA_DOWNLOADED:
+            if (kDebugMode) {
+              print("Media DOwnloaded");
+            }
             break;
         }
       },

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -21,16 +20,16 @@ class _HomeDrawerState extends State<HomeDrawer> {
     return  SafeArea(
       child: Drawer(
         child: Container(
-          color: Color(0xFF1B1D21),
+          color: const Color(0xFF1B1D21),
           child: Column(
             children: [
               DrawerHeader(
                 padding: EdgeInsets.zero,
                 child: UserAccountsDrawerHeader(
-                    decoration: BoxDecoration(color: Color(0xFF141517)),
+                    decoration: const BoxDecoration(color: Color(0xFF141517)),
                     margin: EdgeInsets.zero,
-                    accountName: Text("$name"),
-                    accountEmail: Text("$gmail"),
+                    accountName: Text(name),
+                    accountEmail: Text(gmail),
                     currentAccountPicture: CircleAvatar(
                       backgroundImage: NetworkImage(url),
                     )),

@@ -1,5 +1,8 @@
+// ignore_for_file: non_constant_identifier_names, use_build_context_synchronously, avoid_unnecessary_containers, unnecessary_null_comparison, unused_local_variable
+
 import 'dart:io';
 import 'dart:ui' as ui;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -57,22 +60,22 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
       final ui.Image image = await boundary.toImage(pixelRatio: 15);
       final ByteData? byteData =
           await image.toByteData(format: ui.ImageByteFormat.png);
-      final Uint8List pngBytes = await byteData!.buffer.asUint8List();
-      if (pngBytes != null) {
-        final result = await ImageGallerySaver.saveImage(
-          byteData.buffer.asUint8List(),
-        );
+      final Uint8List pngBytes = byteData!.buffer.asUint8List();
+      final result = await ImageGallerySaver.saveImage(
+        byteData.buffer.asUint8List(),
+      );
+      if (kDebugMode) {
         print(result);
-        Fluttertoast.showToast(msg: "Image Saved Successfully");
       }
+      Fluttertoast.showToast(msg: "Image Saved Successfully");
     } else {
       Permission.storage.request();
     }
   }
 
-  @override
   List<double> filter = NO_FILTER;
 
+  @override
   Widget build(BuildContext context) {
     List<double> BRIGHTNESS = [
       brightness_value,
@@ -168,7 +171,7 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
           child: Row(
             children: [
               FilterRowButton(
-                  image: kpath + "logo.png",
+                  image: "${kpath}logo.png",
                   label: "NO FILTER",
                   tap: () {
                     setState(() {
@@ -176,7 +179,7 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
                     });
                   }),
               FilterRowButton(
-                  image: kpath + "logo.png",
+                  image: "${kpath}logo.png",
                   label: "GREY SCALE",
                   tap: () {
                     setState(() {
@@ -184,7 +187,7 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
                     });
                   }),
               FilterRowButton(
-                  image: kpath + "logo.png",
+                  image: "${kpath}logo.png",
                   label: "CONTRAST",
                   tap: () {
                     setState(() {
@@ -192,7 +195,7 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
                     });
                   }),
               FilterRowButton(
-                  image: kpath + "logo.png",
+                  image: "${kpath}logo.png",
                   label: "SATURATION",
                   tap: () {
                     setState(() {
@@ -200,7 +203,7 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
                     });
                   }),
               FilterRowButton(
-                  image: kpath + "logo.png",
+                  image: "${kpath}logo.png",
                   label: "EXPOSURE",
                   tap: () {
                     setState(() {
@@ -208,7 +211,7 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
                     });
                   }),
               FilterRowButton(
-                  image: kpath + "logo.png",
+                  image: "${kpath}logo.png",
                   label: "BLUE",
                   tap: () {
                     setState(() {
@@ -216,7 +219,7 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
                     });
                   }),
               FilterRowButton(
-                  image: kpath + "logo.png",
+                  image: "${kpath}logo.png",
                   label: "HUE",
                   tap: () {
                     setState(() {
@@ -224,7 +227,7 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
                     });
                   }),
               FilterRowButton(
-                  image: kpath + "logo.png",
+                  image: "${kpath}logo.png",
                   label: "DARK",
                   tap: () {
                     setState(() {
@@ -232,7 +235,7 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
                     });
                   }),
               FilterRowButton(
-                  image: kpath + "logo.png",
+                  image: "${kpath}logo.png",
                   label: "SEPIA",
                   tap: () {
                     setState(() {
@@ -240,7 +243,7 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
                     });
                   }),
               FilterRowButton(
-                  image: kpath + "logo.png",
+                  image: "${kpath}logo.png",
                   label: "SWEET",
                   tap: () {
                     setState(() {
@@ -248,7 +251,7 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
                     });
                   }),
               FilterRowButton(
-                  image: kpath + "logo.png",
+                  image: "${kpath}logo.png",
                   label: "VINTAGE",
                   tap: () {
                     setState(() {
@@ -256,7 +259,7 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
                     });
                   }),
               FilterRowButton(
-                  image: kpath + "logo.png",
+                  image: "${kpath}logo.png",
                   label: "INVERTED",
                   tap: () {
                     setState(() {
@@ -317,7 +320,6 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
               min: 0.5,
               max: 3,
               onChanged: (double value) {
-                print(value);
                 setState(() {
                   contrast_value = value.toDouble();
                 });
@@ -347,7 +349,6 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
               min: 0,
               max: 200,
               onChanged: (double value) {
-                print(value);
                 setState(() {
                   radius = value.toDouble();
                 });
@@ -414,7 +415,6 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
               min: 0,
               max: 50,
               onChanged: (double value) {
-                print(value);
                 setState(() {
                   phorizontal = value.toDouble();
                 });
@@ -444,7 +444,6 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
               min: 0,
               max: 50,
               onChanged: (double value) {
-                print(value);
                 setState(() {
                   pvertical = value.toDouble();
                 });
@@ -474,7 +473,6 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
               min: 0,
               max: 50,
               onChanged: (double value) {
-                print(value);
                 setState(() {
                   pall = value.toDouble();
                 });
@@ -504,7 +502,6 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
               min: 0,
               max: 20,
               onChanged: (double value) {
-                print(value);
                 setState(() {
                   borderwidth = value.toDouble();
                 });
@@ -534,7 +531,6 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
               min: 0,
               max: 100,
               onChanged: (double value) {
-                print(value);
                 setState(() {
                   borderadius = value.toDouble();
                 });
@@ -554,7 +550,7 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
             backgroundColor: const Color(0xFF313030),
             leading: IconButton(
                 onPressed: () {
-                  const  FaceBookAds().showInter();
+                  const FaceBookAds().showInter();
                   Navigator.pop(context);
                 },
                 icon: const Icon(Icons.arrow_back_ios_new)),
@@ -563,7 +559,7 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
             actions: [
               IconButton(
                   onPressed: () {
-                   const  FaceBookAds().showInter();
+                    const FaceBookAds().showInter();
                     convertWidgetToImage();
                   },
                   icon: const Icon(Icons.save))
@@ -574,8 +570,8 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
               child: Stack(
                 children: [
                   Center(
-                    child: Container(
-                       height: (MediaQuery.of(context).size.height)-140,
+                    child: SizedBox(
+                      height: (MediaQuery.of(context).size.height) - 140,
                       width: (MediaQuery.of(context).size.width) + pvertical,
                       child: croppedimage != null
                           ? Stack(
@@ -649,7 +645,7 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
                     left: 0,
                     right: 0,
                     child: Center(
-                      child: Container(
+                      child: SizedBox(
                         height: MediaQuery.of(context).size.height / 7,
                         child: rowForButtion[i],
                       ),
@@ -671,7 +667,7 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
                       top: MediaQuery.of(context).size.height / 2,
                       child: SingleChildScrollView(
                         child: Container(
-                            height: MediaQuery.of(context).size.height / 2,
+                            height: (MediaQuery.of(context).size.height) / 3,
                             width: MediaQuery.of(context).size.width,
                             decoration: BoxDecoration(
                               color: const Color(0xFFCECECE),
@@ -698,7 +694,6 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
                                           icon: Icons.crop,
                                           label: "Crop",
                                           tap: () {
-
                                             setState(() {
                                               i = 1;
                                               toolsboxvisibility = false;
@@ -813,6 +808,10 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
                                         ),
                                       ],
                                     ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    const FaceBookAds().nativeAd()
                                   ],
                                 ),
                               ),
@@ -853,9 +852,7 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
                       color: Colors.grey,
                     ),
                     GestureDetector(
-                      onTap: () {
-                        print("Share");
-                      },
+                      onTap: () {},
                       child: const Text(
                         "Share",
                         style: k20_600,

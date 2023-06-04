@@ -5,6 +5,7 @@ const kpath = "assests/images/";
 const k16_400 =
     TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w400,);
 
+// ignore: constant_identifier_names
 const k16_400_blue =
     TextStyle(fontSize: 16, color: Colors.blue, fontWeight: FontWeight.w400);
 
